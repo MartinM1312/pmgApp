@@ -1,15 +1,15 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Linking} from 'react-native';
 import {styles} from './styles';
-import SvgUri from 'react-native-svg-uri';
 import {SITE_URL} from '../../constants/urls';
+import {SvgUri} from 'react-native-svg';
 
 const SlideContent = ({slide, action}: any) => {
   return (
     <View style={styles.overlayContent}>
       {slide?.eyebrowImage && (
         <View style={styles.eyebrowContainer}>
-          <SvgUri source={{uri: slide?.eyebrowImage}} />
+          <SvgUri uri={slide?.eyebrowImage} />
         </View>
       )}
       {slide?.eyeBrowText && (
