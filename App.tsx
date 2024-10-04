@@ -1,6 +1,6 @@
 import React from 'react';
 import {LogBox} from 'react-native';
-import {MainView} from './src/views/MainView';
+import {MainView} from './src/views/MainView/MainView';
 LogBox.ignoreLogs([
   'Warning: ...',
   'componentWillReceiveProps',
