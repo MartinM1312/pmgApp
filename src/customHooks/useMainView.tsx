@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import {useState, useEffect} from 'react';
 
 import {SlidesData} from '../models/heroSlideModel';

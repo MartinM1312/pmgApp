@@ -1,24 +1,15 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, useColorScheme, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 
-import Carousel from '../components/Carousel';
-import StorySlider from '../components/StorySlider';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Carousel from '../components/Carousel/Carousel';
+import StorySlider from '../components/StorySlider/StorySlider';
 
 import {useMainView} from '../customHooks/useMainView';
 
 export function MainView(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   const {announcements, heroSlides} = useMainView();
-  console.log(heroSlides);
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView>
       <View style={styles.container}>
         <Carousel announcements={announcements} />
         <StorySlider slides={heroSlides} />
