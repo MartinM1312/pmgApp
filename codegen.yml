@@ -1,0 +1,15 @@
+overwrite: true
+schema:
+  - 'https://graphql.contentful.com/content/v1/spaces/951t4k2za2uf/environments/development':
+      headers:
+        Authorization: Bearer z1WChu4lboj4rgA3nVobbbuy5ph_ti_n8u-6CFAx39c
+  - 'https://graphql.contentful.com/content/v1/spaces/tyqyfq36jzv2/environments/development':
+      headers:
+        Authorization: Bearer oumFT5M9gcr-AxAzvscA8NemaRY9UjHcJOxf0Age16I
+documents: 'src/**/*.graphql'
+generates:
+  src/types/graphql.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
