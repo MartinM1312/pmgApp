@@ -1,6 +1,6 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
-const {width: windowWidth} = Dimensions.get('window');
+export const {width: windowWidth} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   carouselContainer: {

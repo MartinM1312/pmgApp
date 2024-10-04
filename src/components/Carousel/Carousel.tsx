@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {View, FlatList} from 'react-native';
 import {Announcement} from '../../models/announcementsModel';
-import {styles} from './styles';
+import {styles, windowWidth} from './styles';
 import Card from './Card';
 import NavigationArrow from './NavigationArrow';
 
@@ -42,12 +42,23 @@ function Carousel({announcements}: CarouselProps) {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(_item, index) => index.toString()}
-        renderItem={({item}) => {
-          return <Card item={item} />;
-        }}
+        renderItem={({item}) => <Card item={item} />}
+        getItemLayout={(_data, index) => ({
+          length: windowWidth,
+          offset: windowWidth * index,
+          index,
+        })}
       />
-      <NavigationArrow action={goToPreviousSlide} direction="left" />
-      <NavigationArrow action={goToNextSlide} direction="right" />
+      <NavigationArrow
+        action={goToPreviousSlide}
+        direction="left"
+        accessibilityLabel="Previous Slide"
+      />
+      <NavigationArrow
+        action={goToNextSlide}
+        direction="right"
+        accessibilityLabel="Next Slide"
+      />
     </View>
   );
 }

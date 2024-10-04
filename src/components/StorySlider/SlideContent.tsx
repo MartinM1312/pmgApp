@@ -24,7 +24,9 @@ const SlideContent = ({slide, action}: any) => {
       )}
       <TouchableOpacity
         style={styles.navigateSliderButton}
-        onPress={() => action()}>
+        onPress={() => action()}
+        accessibilityLabel="Next"
+        accessibilityRole="button">
         <Text style={styles.navigateSliderIcon}>{'Next >'}</Text>
       </TouchableOpacity>
     </View>
