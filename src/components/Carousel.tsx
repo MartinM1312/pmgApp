@@ -9,15 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {SITE_URL} from '../constants/urls';
-
-interface Announcement {
-  __typename: string;
-  backgroundColor: string;
-  ctaLabel: string;
-  ctaUrl: string;
-  intro: string;
-  message: string;
-}
+import {Announcement} from '../models/announcementsModel';
 
 interface CarouselProps {
   announcements: Announcement[];
@@ -51,7 +43,6 @@ function Carousel({announcements}: CarouselProps): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 2,
-    marginTop: 15,
   },
   text: {
     color: 'white',

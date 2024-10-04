@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import {SafeAreaView, StyleSheet, useColorScheme, View} from 'react-native';
 
@@ -23,7 +16,7 @@ export function MainView(): React.JSX.Element {
   };
 
   const {announcements, heroSlides} = useMainView();
-
+  console.log(heroSlides);
   return (
     <SafeAreaView style={backgroundStyle}>
       <View style={styles.container}>
