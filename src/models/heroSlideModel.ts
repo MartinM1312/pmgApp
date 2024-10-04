@@ -7,6 +7,6 @@ export interface SlidesData {
   eyeBrowText: string;
   targetUrl: string | null;
   enableDarkBackdrop: boolean;
-  eyebrowImage: object;
+  eyebrowImage: string | null;
   mobileImageOrVideo: MobileImageOrVideo | null;
 }

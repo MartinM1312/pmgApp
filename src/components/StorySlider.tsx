@@ -1,111 +1,98 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   Dimensions,
+  Linking,
+  Image,
 } from 'react-native';
 import Video from 'react-native-video';
 import {SlidesData} from '../models/heroSlideModel';
+import SvgUri from 'react-native-svg-uri';
+import {SITE_URL} from '../constants/urls';
 
 const {width: windowWidth} = Dimensions.get('window');
 const StorySlider = ({slides}: {slides: SlidesData[]}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const currentSlide = slides[currentIndex];
 
-  const progress = useRef(new Animated.Value(0)).current;
-  const currentSlide = slides[0];
-
-  const nextSlide = useCallback(() => {
-    if (currentIndex < slides.length - 1) {
-      setCurrentIndex(0);
-    } else {
-      setCurrentIndex(0); // Volver al primer slide al final
-    }
-  }, [currentIndex, slides.length]);
-
-  useEffect(() => {
-    const duration = 10000;
-
-    Animated.timing(progress, {
-      toValue: 1,
-      duration,
-      useNativeDriver: false,
-    }).start(() => {
-      nextSlide();
+  const goToNextSlide = useCallback(() => {
+    setCurrentIndex(previousIndex => {
+      if (previousIndex < slides.length - 1) {
+        return previousIndex + 1;
+      }
+      return 0;
     });
-    return () => {
-      progress.setValue(0);
-    };
-  }, [nextSlide, progress]);
+  }, [slides.length]);
 
+  const renderProgressBars = () => {
+    return slides.map((_, index) => (
+      <View key={index} style={styles.progressBarBackground}>
+        <View style={styles.progressBar} />
+      </View>
+    ));
+  };
+
+  const isVideo =
+    currentSlide?.mobileImageOrVideo?.contentType.startsWith('video');
+
+  if (currentSlide?.title === null) {
+    setCurrentIndex(() => 0);
+  }
   return (
-    <View style={styles.container}>
-      {/* Media (Video o Imagen) */}
-      {currentSlide?.mobileImageOrVideo?.contentType.startsWith('video') ? (
-        <Video
-          source={{uri: currentSlide?.mobileImageOrVideo?.url}}
-          style={styles.media}
-          resizeMode="cover"
-          onEnd={nextSlide}
-        />
-      ) : (
-        <Image
-          source={{uri: currentSlide?.mobileImageOrVideo?.url}}
-          style={styles.media}
-        />
-      )}
+    <>
+      {
+        <View style={styles.container}>
+          {isVideo ? (
+            <Video
+              source={{uri: currentSlide?.mobileImageOrVideo?.url}}
+              style={styles.media}
+              resizeMode="cover"
+              onEnd={goToNextSlide}
+            />
+          ) : (
+            <Image
+              source={{uri: currentSlide?.mobileImageOrVideo?.url}}
+              style={styles.media}
+            />
+          )}
 
-      {/* Fondo oscuro opcional */}
-      {currentSlide?.enableDarkBackdrop && <View style={styles.overlay} />}
+          {currentSlide?.enableDarkBackdrop && <View style={styles.overlay} />}
 
-      {/* Contenido superpuesto */}
-      <View style={styles.overlayContent}>
-        {currentSlide?.eyebrowImage && (
-          <Image
-            source={currentSlide.eyebrowImage}
-            style={styles.eyebrowImage}
-          />
-        )}
-        {currentSlide?.eyeBrowText && (
-          <Text style={styles.eyebrowText}>{currentSlide?.eyeBrowText}</Text>
-        )}
-        {currentSlide?.title && (
-          <Text style={styles.title}>{currentSlide?.title}</Text>
-        )}
-        {currentSlide?.targetUrl && (
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.ctaText}>Learn More</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {/* Barra de progreso */}
-      <View style={styles.progressContainer}>
-        {slides.map((_, index) => (
-          <Animated.View
-            key={index}
-            style={[
-              styles.progressBar,
-              index <= currentIndex && {backgroundColor: '#fff'},
-              index === currentIndex && {
-                width: progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['0%', '100%'],
-                }),
-              },
-            ]}
-          />
-        ))}
-      </View>
-
-      {/* Botón para avanzar manualmente */}
-      {/* <TouchableOpacity style={styles.nextButton} onPress={nextSlide}>
-        <Text style={styles.nextButtonText}>{'>'}</Text>
-      </TouchableOpacity> */}
-    </View>
+          <View style={styles.overlayContent}>
+            {currentSlide?.eyebrowImage && (
+              <View style={styles.eyebrowContainer}>
+                <SvgUri source={{uri: currentSlide?.eyebrowImage}} />
+              </View>
+            )}
+            {currentSlide?.eyeBrowText && (
+              <Text style={styles.eyebrowText}>
+                {currentSlide?.eyeBrowText}
+              </Text>
+            )}
+            {currentSlide?.title && (
+              <Text style={styles.title}>{currentSlide?.title}</Text>
+            )}
+            {currentSlide?.targetUrl && (
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(SITE_URL + currentSlide?.targetUrl)
+                }>
+                <Text style={styles.ctaText}>Learn More</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={styles.navigateSliderButton}
+              onPress={goToNextSlide}>
+              <Text style={styles.navigateSliderIcon}>{'>'}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.progressContainer}>{renderProgressBars()}</View>
+        </View>
+      }
+    </>
   );
 };
 
@@ -130,31 +117,37 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   overlayContent: {
+    height: '100%',
+    width: windowWidth,
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+  },
+  eyebrowContainer: {
     position: 'absolute',
-    top: '50%',
-    left: '5%',
-    right: '5%',
+    top: 20,
+    marginLeft: 30,
   },
   eyebrowImage: {
     width: 50,
     height: 50,
-    marginBottom: 10,
   },
   eyebrowText: {
-    fontSize: 18,
+    fontSize: 32,
     color: '#fff',
+    fontWeight: 'bold',
     marginBottom: 10,
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     color: '#fff',
     fontWeight: 'bold',
     marginBottom: 20,
   },
   ctaText: {
-    fontSize: 16,
-    color: '#00f',
+    fontSize: 18,
+    color: '#eff',
     marginTop: 10,
+    textDecorationLine: 'underline',
   },
   progressContainer: {
     position: 'absolute',
@@ -163,23 +156,24 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'space-between',
   },
-  progressBar: {
+  progressBarBackground: {
     flex: 1,
     height: 5,
     backgroundColor: '#aaa',
     marginHorizontal: 2,
   },
-  nextButton: {
-    position: 'absolute',
-    bottom: 50,
-    right: 10,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 50,
+  progressBar: {
+    height: 5,
+    backgroundColor: '#e0e0e0',
   },
-  nextButtonText: {
-    fontSize: 20,
+  navigateSliderButton: {
+    position: 'absolute',
+    right: 15,
+  },
+  navigateSliderIcon: {
+    fontSize: 40,
     fontWeight: 'bold',
+    color: '#aaaa',
   },
 });
 
