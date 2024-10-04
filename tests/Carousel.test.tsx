@@ -41,5 +41,10 @@ describe('Carousel', () => {
     fireEvent.press(nextButton);
 
     expect(getByText('Intro 2')).toBeTruthy();
+
+    const previousButton = getByLabelText('Previous Slide');
+    fireEvent.press(previousButton);
+
+    expect(getByText('Intro 1')).toBeTruthy();
   });
 });
