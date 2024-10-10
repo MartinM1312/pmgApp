@@ -61,6 +61,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
     justifyContent: 'space-between',
+    zIndex: 2,
   },
   progressBarBackground: {
     flex: 1,
